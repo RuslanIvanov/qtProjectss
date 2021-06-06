@@ -1,0 +1,102 @@
+
+default:
+  tags: [ docker ]
+
+variables:
+  DEBIAN_FRONTEND: noninteractive
+  DEB_LINUX_HEADERS_PACKAGE: linux-headers-generic
+  DEB_LINUX_IMAGE_PACKAGE: linux-image-generic
+
+.aptinstall: &aptinstall
+  - |
+    apt-get update
+    apt-get install -y $DEB_LINUX_IMAGE_PACKAGE $DEB_LINUX_HEADERS_PACKAGE gcc make git dkms $ADDITIONAL_PACKAGES
+
+.buildcodeandinstall: &buildcodeandinstall
+  - |
+    # build driver
+    make KDIR=/lib/modules/*/build all
+    # install driver and firmware (requires linux image package)
+    make KDIR=/lib/modules/*/build install
+
+.buildfirmware: &buildfirmware
+  - |
+    # rebuild firmware files from header files
+    make firmware
+    # check if 'make firmware' changed the *.fw files
+    git diff --exit-code
+
+.dkms: &dkms
+  - |
+    # test DKMS
+    # remove any untracked files
+    git clean -d -f
+    # remove previously installed kernel module
+    find /lib/modules/ -type f -name "systec_can.ko" -exec rm -f {} \;
+    # remove previously installed firmware files
+    ./remove_firmware.sh
+    # build and install via DKMS for the kernel version installed in Docker container
+    dkms install . -k $(ls -1 /lib/modules/ | head -n1)
+    # remove installation again
+    dkms remove systec_can/$(dkms status systec_can | sed -E 's/^[^,]+,\s([^,]+).*/\1/') --all
+
+.dist: &dist
+  - |
+    # create dist package
+    if [ -n "$CREATEDIST" ]; then  make dist ; else echo "dist package creation disabled" ; fi
+
+.builddebiantemplate:
+  stage: build
+  image: $CI_JOB_NAME
+  script:
+    - *aptinstall
+    - *buildcodeandinstall
+    - *buildfirmware
+    - *dkms
+    - *dist
+
+debian:jessie:
+  extends: .builddebiantemplate
+  variables:
+    DEB_LINUX_HEADERS_PACKAGE: linux-headers-amd64
+    DEB_LINUX_IMAGE_PACKAGE: linux-image-amd64
+
+debian:stretch:
+  extends: .builddebiantemplate
+  variables:
+    DEB_LINUX_HEADERS_PACKAGE: linux-headers-amd64
+    DEB_LINUX_IMAGE_PACKAGE: linux-image-amd64
+
+debian:buster:
+  extends: .builddebiantemplate
+  variables:
+    DEB_LINUX_HEADERS_PACKAGE: linux-headers-amd64
+    DEB_LINUX_IMAGE_PACKAGE: linux-image-amd64
+
+debian:bullseye:
+  extends: .builddebiantemplate
+
+ubuntu:12.04:
+  extends: .builddebiantemplate
+
+ubuntu:14.04:
+  extends: .builddebiantemplate
+
+ubuntu:16.04:
+  extends: .builddebiantemplate
+
+ubuntu:18.04:
+  extends: .builddebiantemplate
+
+ubuntu:20.04:
+  extends: .builddebiantemplate
+
+ubuntu:20.10:
+  extends: .builddebiantemplate
+  variables:
+    CREATEDIST: do
+  artifacts:
+    name: "source-distribution_$CI_COMMIT_REF_NAME"
+    paths:
+      - ./systec_can*.tar.bz2
+
