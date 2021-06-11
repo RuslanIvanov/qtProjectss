@@ -590,7 +590,16 @@ void MainWindow::processReceivedFrames()
             spinBox_NData_SA->setValue(radioInputs.NData);
             spinBox_deadlock->setValue(radioInputs.deadlock);
             spinBox_SAAck->setValue(radioInputs.SAAck);
+
+            //russl
             spinBox_CPCounter_SA->setValue(radioInputs.CPCounter);
+            //russl
+            counterPA = spinBox_CPCounter_SA->value();
+
+            //russl
+            spinBox_CPCounter_PA->setValue(counterPA);
+
+
             lineEdit_id_SA->setText(QString::number(radioInputs.id, 16));
             spinBox_cduRoute_SA->setValue(radioInputs.cduRoute);
             spinBox_cduTrain_SA->setValue(radioInputs.cduTrain);
