@@ -1,0 +1,12 @@
+hey if you want to remove/uninstall Qtcreator then follow this:
+
+open your terminal (clt + Alt + T) then...
+
+1.to uninstall only Qtcreator :
+
+sudo apt-get remove qtcreator
+
+2.if you want to remove Qtcreator and its dependent packages as well then :
+
+sudo apt-get remove --auto-remove qtcreator
+
