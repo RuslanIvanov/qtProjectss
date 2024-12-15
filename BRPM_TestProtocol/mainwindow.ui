@@ -37,7 +37,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>0</number>
+         <number>1</number>
         </property>
         <widget class="QWidget" name="tab_radio">
          <attribute name="title">
@@ -585,6 +585,9 @@
                 </item>
                 <item row="2" column="3">
                  <widget class="QSpinBox" name="spinBox_countNumStan"/>
+                </item>
+                <item row="0" column="3">
+                 <widget class="QSpinBox" name="spinBox_stationCode_SA_COUNT"/>
                 </item>
                </layout>
               </item>
