@@ -53,7 +53,8 @@ public slots:
     void on_pushButton_send_SA_clicked();
 
 private slots:
-    void on_pushButton_2_clicked();
+
+    void on_checkBox_test_clicked();
 
 private:
 	void pushButton_clicked(QSpinBox* startBox, BRPM_Encoder::MCP_BRP_MessType type);

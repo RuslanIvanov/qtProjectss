@@ -740,8 +740,8 @@ void MainWindow::processReceivedFrames()
 	}
 }
 
-void MainWindow::on_pushButton_2_clicked()
+
+void MainWindow::on_checkBox_test_clicked()
 {
-
+     int a=0;
 }
-
