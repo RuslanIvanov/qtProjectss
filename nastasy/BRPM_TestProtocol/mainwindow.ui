@@ -37,7 +37,7 @@
       <item>
        <widget class="QTabWidget" name="tabWidget">
         <property name="currentIndex">
-         <number>1</number>
+         <number>0</number>
         </property>
         <widget class="QWidget" name="tab_radio">
          <attribute name="title">
@@ -1777,13 +1777,6 @@ QPushButton { background-color: rgba(221,223,228); }</string>
                              </property>
                              <property name="alignment">
                               <set>Qt::AlignCenter</set>
-                             </property>
-                            </widget>
-                           </item>
-                           <item>
-                            <widget class="QCheckBox" name="checkBox">
-                             <property name="text">
-                              <string>CheckBox</string>
                              </property>
                             </widget>
                            </item>
