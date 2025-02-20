@@ -29,6 +29,7 @@ class MainWindow :  public QMainWindow, public Ui::MainWindow
         GrafReq_event
     };
     unsigned char m_countPrintf[10];
+    bool m_bCheck;
 
 public:
 	explicit MainWindow(QWidget *parent = nullptr);
@@ -55,6 +56,8 @@ public slots:
 private slots:
 
     void on_checkBox_test_clicked();
+
+    void on_checkBox_sync_clicked();
 
 private:
 	void pushButton_clicked(QSpinBox* startBox, BRPM_Encoder::MCP_BRP_MessType type);

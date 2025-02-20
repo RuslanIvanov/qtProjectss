@@ -15,7 +15,8 @@ MainWindow::MainWindow(QWidget *parent) :
     WirelessOutputs wout;
     WirelessInputs win;
     qDebug() << Q_FUNC_INFO << sizeof(wout) << "+" << sizeof(win) << "=" << (sizeof(wout)+sizeof(win));
-//    ::exit(0);
+
+    m_bCheck=false;
 
     sync_tmr.setInterval(/*50*/TMR);
     connect(&sync_tmr, SIGNAL(timeout()), SLOT(sync()));
@@ -212,9 +213,7 @@ void MainWindow::sendVarData()
 	data.push_back(sent_cntr++);
 
 	BRPM_encoder->update(BRPM_Encoder::MCP_BRP_VarLen, data);
-	frames2send = BRPM_encoder->getFrames();
-
-	sendFrames(frames2send);
+	frames2send = BRPM_encoder->getFrames();   
 }
 
 void MainWindow::on_pushButton_start_clicked(bool checked)
@@ -303,7 +302,26 @@ void MainWindow::on_pushButton_send_PA_clicked()
     BRPM_encoder->update(BRPM_Encoder::MCP_BRP_VarLen, data);
     frames2send = BRPM_encoder->getFrames();
 
-    sendFrames(frames2send);
+    static quint8 sent_test;//russl
+    if(m_bCheck)
+    {
+        sent_test++;
+        if(sent_test<50)
+        {
+            sendFrames(frames2send);
+        }
+        else if ( (sent_test>=50) && (sent_test<=100) )
+        {
+            qDebug()<<"TEST: no data "<<sent_test;
+        }else sent_test=0;
+
+    }else
+    {
+        sent_test=0;
+        sendFrames(frames2send);
+    }
+
+    //sendFrames(frames2send);//old
 
     label_PA_cntr->setText(QString::number(BRPM_encoder->getSentNmessage()));
 }
@@ -744,5 +762,10 @@ void MainWindow::processReceivedFrames()
 
 void MainWindow::on_checkBox_test_clicked()
 {
-     int a=0;
+     if(m_bCheck) { m_bCheck = false; qDebug()<<"TEST FALSE"; } else { m_bCheck = true;  qDebug()<<"TEST TRUE"; }
+}
+
+void MainWindow::on_checkBox_sync_clicked()
+{
+
 }
